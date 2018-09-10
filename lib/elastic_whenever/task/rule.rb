@@ -20,7 +20,7 @@ module ElasticWhenever
       def self.convert(option, task)
         self.new(
           option,
-          name: rule_name(option.identifier, task.commands),
+          name: task.name || rule_name(option.identifier, task.commands),
           expression: task.expression
         )
       end

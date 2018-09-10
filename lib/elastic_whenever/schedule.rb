@@ -69,7 +69,8 @@ module ElasticWhenever
     end
 
     def every(frequency, options = {}, &block)
-      @tasks << Task.new(@environment, @bundle_command, schedule_expression(frequency, options)).tap do |task|
+      name = options.delete(:name)
+      @tasks << Task.new(@environment, @bundle_command, schedule_expression(frequency, options), name).tap do |task|
         task.instance_eval(&block)
       end
     rescue UnsupportedFrequencyException => exn

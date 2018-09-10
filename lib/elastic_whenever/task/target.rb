@@ -1,6 +1,7 @@
 module ElasticWhenever
   class Task
     class Target
+      attr_reader :id
       attr_reader :cluster
       attr_reader :definition
       attr_reader :container
@@ -26,7 +27,7 @@ module ElasticWhenever
         end
       end
 
-      def initialize(option, cluster:, definition:, container:, commands:, rule:, role:)
+      def initialize(option, cluster:, definition:, container:, commands:, rule:, role:, id:)
         unless definition.containers.include?(container)
           raise InvalidContainerException.new("#{container} is invalid container. valid=#{definition.containers.join(",")}")
         end
@@ -38,6 +39,7 @@ module ElasticWhenever
         @rule = rule
         @role = role
         @client = Aws::CloudWatchEvents::Client.new(option.aws_config)
+        @id = id
       end
 
       def create
@@ -45,7 +47,7 @@ module ElasticWhenever
           rule: rule.name,
           targets: [
             {
-              id: Digest::SHA1.hexdigest(commands.join("-")),
+              id: id || Digest::SHA1.hexdigest(commands.join("-")),
               arn: cluster.arn,
               input: input_json(container, commands),
               role_arn: role.arn,

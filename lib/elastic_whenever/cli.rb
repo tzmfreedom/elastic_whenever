@@ -65,9 +65,10 @@ module ElasticWhenever
               cluster: cluster,
               definition: definition,
               container: schedule.container,
-              commands: command,
+              commands: command[:command],
               rule: rule,
               role: role,
+              id: command[:id],
             )
           end
 
